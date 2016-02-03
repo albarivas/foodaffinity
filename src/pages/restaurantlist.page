@@ -1,0 +1,114 @@
+<apex:page showHeader="false" sidebar="false" standardController="Restaurant__x" extensions="RestaurantController" recordSetVar="Restaurants">
+	<apex:stylesheet value="{!URLFOR($Resource.prism,'templated-prism/assets/css/main.css')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.foodaffinity,'resources/css/list.css')}" />
+	<apex:form id="content">
+		<apex:actionFunction name="getByDistance" action="{!getByDistance}" rerender="restaurants" oncomplete="hideLoading();">
+			<apex:param name="latitude" assignTo="{!Latitude}" value="" />
+			<apex:param name="longitude" assignTo="{!Longitude}" value="" />
+		</apex:actionFunction>
+
+		<apex:actionFunction name="orderByPopularity" action="{!orderByPopularity}" rerender="restaurants" oncomplete="hideLoading();"/>
+
+		<apex:actionFunction name="orderByAffinity" action="{!orderByAffinity}" rerender="restaurants" oncomplete="hideLoading();"/>
+
+		<apex:actionFunction name="vote" action="{!vote}" rerender="restaurants">
+			<apex:param name="restaurantExternalId" assignTo="{!RestaurantVoteToUpsert}" value="" />
+		</apex:actionFunction>
+
+		<section id="banner">
+			<div class="inner split">
+				<section>
+					<h2>Food Affinity</h2>
+				</section>
+				<section>
+					<p>Vote your preferred restaurants in order we can recommend you new ones based on your likes.</p>
+					<div id="links">
+						<span>{!$User.FirstName} {!$User.LastName}</span>&nbsp;
+						<apex:outputLink value="{!$Site.Prefix}/secur/logout.jsp" rendered="{!NOT(ISPICKVAL($User.UserType,'Guest'))}">{!$Label.site.logout}</apex:outputLink>
+					</div>
+				</section>
+			</div>
+		</section>
+
+		<section id="one" class="wrapper">
+			<div id="geolocation-output"></div>
+			<ul class="actions special">
+				<li><a href="#" class="button alt" onclick="showLoading(); getByDistance(latitude, longitude);">Order by distance</a></li>
+				<li><a href="#" class="button alt" onclick="showLoading(); orderByPopularity(latitude, longitude);">Order by Popularity</a></li>
+				<li><a href="#" class="button alt" onclick="showLoading(); orderByAffinity();">Order by Affinity</a></li>
+			</ul>
+		</section>
+
+		<section id="two" class="wrapper style2 alt">
+			<div class="inner">
+				<span id="loading">Loading...</span>
+				<apex:outputPanel id="restaurants" styleClass="restaurants-panel">
+					<apex:pageMessages />
+					<apex:repeat value="{!Restaurants}" var="restaurant">
+						<c:restaurant restaurant="{!restaurant}" vote="{!VotesByRestaurantExternalId[restaurant.ExternalId]}" renderDetail="false"/>
+					</apex:repeat>
+				</apex:outputPanel>
+			</div>
+		</section>
+
+		<footer id="footer">
+			<div class="copyright">
+				&copy; Alba Azcona Rivas. All rights reserved. Images: <a href="http://unsplash.com">Unsplash</a>. Design: <a href="http://templated.co">Templated</a>.
+			</div>
+		</footer>
+
+	</apex:form>
+
+	<!-- Scripts -->
+	<apex:includeScript value="{!URLFOR($Resource.prism,'templated-prism/assets/js/jquery.min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.prism,'templated-prism/assets/js/skel.min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.prism,'templated-prism/assets/js/util.js')}" />
+	<!--[if lte IE 8]><apex:includeScript value="{!URLFOR($Resource.prism,'templated-prism/assets/js/ie/respond.min.js')}" /><![endif]-->
+	<apex:includeScript value="{!URLFOR($Resource.prism,'templated-prism/assets/js/main.js')}" />
+	<script>
+		var latitude;
+		var longitude;
+
+		function getCurrentPosition()
+		{
+			var output = document.getElementById("geolocation-output");
+
+			if (navigator.geolocation)
+			{
+				navigator.geolocation.getCurrentPosition(getCurrentPositionSuccess, getCurrentPositionError);
+			}
+			else
+			{
+				output.innerHTML = "Geolocation is not supported by your browser";
+				return;
+			}
+		}
+
+		function getCurrentPositionSuccess(position)
+		{
+			latitude  = position.coords.latitude;
+			longitude = position.coords.longitude;
+			getByDistance(latitude, longitude);
+		}
+
+		function getCurrentPositionError()
+		{
+			var output = document.getElementById("geolocation-output");
+			output.innerHTML = "Unable to retrieve your location";
+		}
+
+		function hideLoading()
+		{
+			var output = document.getElementById("loading");
+			output.style.display = 'none';
+		}
+
+		function showLoading()
+		{
+			var output = document.getElementById("loading");
+			output.style.display = 'block';
+		}
+
+		window.onload = getCurrentPosition();
+	</script>
+</apex:page>

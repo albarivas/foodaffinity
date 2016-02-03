@@ -1,0 +1,56 @@
+<apex:component >
+	<apex:attribute required="true" name="restaurant" description="Restaurant object" type="Restaurant__x"/>
+	<apex:attribute required="true" name="vote" description="Vote wrapper" type="RestaurantVote"/>
+	<apex:attribute required="true" name="renderDetail" description="Renders detail info" type="boolean"/>
+	<div class="spotlight">
+		<div class="image">
+			<img src="{!IF(restaurant.Photo__c == '', URLFOR($Resource.foodaffinity,'resources/images/no-photo.jpg'), restaurant.Photo__c)}"/>
+			<apex:outputPanel id="map" rendered="{!renderDetail}">
+				<iframe width="640" height="480" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="{!restaurant.MapsUrl__c}&output=embed"></iframe>
+			</apex:outputPanel>
+		</div>
+		<div class="content">
+			<h3>
+				<a href="{!URLFOR($Page.restaurantdetail,'',[ExternalId=restaurant.ExternalId])}">
+					<apex:outputField value="{!restaurant.Name__c}"/>
+				</a>
+			</h3>
+			<p><apex:outputField value="{!restaurant.Location__c}"/></p>
+			<p><apex:outputField value="{!restaurant.Types__c}"/></p>
+			<div id="vote-area">
+				<div id="vote-area-left">
+					<apex:outputText rendered="{!IF(vote.Dto.Id != null, true, false)}">
+						<b>You already voted this restaurant: &nbsp;</b>
+					</apex:outputText>
+					<apex:selectList value="{!vote.Value}" size="1">
+						<apex:selectOption itemValue="-" itemLabel="-"/>
+						<apex:selectOption itemValue="0" itemLabel="0"/>
+						<apex:selectOption itemValue="1" itemLabel="1"/>
+						<apex:selectOption itemValue="2" itemLabel="2"/>
+						<apex:selectOption itemValue="3" itemLabel="3"/>
+						<apex:selectOption itemValue="4" itemLabel="4"/>
+						<apex:selectOption itemValue="5" itemLabel="5"/>
+						<apex:selectOption itemValue="6" itemLabel="6"/>
+						<apex:selectOption itemValue="7" itemLabel="7"/>
+						<apex:selectOption itemValue="8" itemLabel="8"/>
+						<apex:selectOption itemValue="9" itemLabel="9"/>
+						<apex:selectOption itemValue="10" itemLabel="10"/>
+					</apex:selectList>
+					<input type="button" value="Vote!" onclick="vote('{!restaurant.ExternalId}');"/>
+				</div>
+				<div id="vote-area-right">
+					<h2>
+						<apex:outputField value="{!restaurant.Rating__c}"/>
+					</h2>
+				</div>
+			</div>
+			<div id="details-panel">
+				<apex:outputPanel id="details" rendered="{!renderDetail}">
+					<p><h3><apex:outputField value="{!restaurant.PhoneNumber__c}"/></h3></p>
+					<p>Go to <a href="{!restaurant.Website__c}">Place Website</a></p>
+					<p><apex:outputField value="{!restaurant.WeekdayText__c}"/></p>
+				</apex:outputPanel>
+			</div>
+		</div>
+	</div>
+</apex:component>

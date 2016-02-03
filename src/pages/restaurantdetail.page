@@ -1,0 +1,47 @@
+<apex:page showHeader="false" sidebar="false" standardController="Restaurant__x" extensions="RestaurantController">
+	<apex:stylesheet value="{!URLFOR($Resource.prism,'templated-prism/assets/css/main.css')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.foodaffinity,'resources/css/detail.css')}" />
+	<apex:form id="content">
+		<apex:actionFunction name="vote" action="{!vote}" rerender="restaurants">
+			<apex:param name="restaurant" assignTo="{!RestaurantVoteToUpsert}" value="" />
+		</apex:actionFunction>
+
+		<section id="banner">
+			<div class="inner split">
+				<section>
+					<h2>Food Affinity</h2>
+				</section>
+				<section>
+					<p>Vote your preferred restaurants in order we can recommend you new ones based on your likes.</p>
+					<div id="links">
+						<span>{!$User.FirstName} {!$User.LastName}</span>&nbsp;
+						<apex:outputLink value="{!$Site.Prefix}">Back</apex:outputLink>
+						<apex:outputLink value="{!$Site.Prefix}/secur/logout.jsp">{!$Label.site.logout}</apex:outputLink>
+					</div>
+				</section>
+			</div>
+		</section>
+
+		<section id="two" class="wrapper style2 alt">
+			<div class="inner">
+				<apex:pageMessages />
+				<apex:outputPanel id="restaurants" styleClass="restaurants-panel">
+					<c:restaurant restaurant="{!Restaurants[0]}" vote="{!VotesByRestaurantExternalId[Restaurants[0].ExternalId]}" renderDetail="true"/>
+				</apex:outputPanel>
+			</div>
+		</section>
+
+		<footer id="footer">
+			<div class="copyright">
+				&copy; Alba Azcona Rivas. All rights reserved. Images: <a href="http://unsplash.com">Unsplash</a>. Design: <a href="http://templated.co">Templated</a>.
+			</div>
+		</footer>
+
+	</apex:form>
+
+	<apex:includeScript value="{!URLFOR($Resource.prism,'templated-prism/assets/js/jquery.min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.prism,'templated-prism/assets/js/skel.min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.prism,'templated-prism/assets/js/util.js')}" />
+	<!--[if lte IE 8]><apex:includeScript value="{!URLFOR($Resource.prism,'templated-prism/assets/js/ie/respond.min.js')}" /><![endif]-->
+	<apex:includeScript value="{!URLFOR($Resource.prism,'templated-prism/assets/js/main.js')}" />
+</apex:page>
