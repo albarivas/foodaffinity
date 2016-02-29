@@ -1,7 +1,7 @@
 /*
  * Developed by @Alba_ARivas
  */
-public with sharing class RestaurantMapper
+public with sharing class RestaurantMapper implements IRestaurantMapper
 {
 	public static Restaurant__x getById(Id restaurantId)
 	{

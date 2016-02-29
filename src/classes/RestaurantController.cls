@@ -24,11 +24,11 @@ public with sharing class RestaurantController
 
 		// No high volume datasource
 		//Restaurant__x restaurant = (Restaurant__x) standardController.getRecord();
-		//Restaurants = new List<Restaurant__x>{RestaurantMapper.getById(restaurant.Id)};
+		//Restaurants = new List<Restaurant__x>{RestaurantMapperFactory.getInstance().getById(restaurant.Id)};
 
 		// High volume datasource
 		String externalId = ApexPages.currentPage().getParameters().get('ExternalId');
-		Restaurants = RestaurantMapper.getByExternalIds(new List<String>{externalId});
+		Restaurants = RestaurantMapperFactory.getInstance().getByExternalIds(new List<String>{externalId});
 
 		VotesByRestaurantExternalId = VoteService.getVotesByRestaurantExternalIdForCurrentUser(Restaurants);
 	}

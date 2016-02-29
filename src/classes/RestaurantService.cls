@@ -5,7 +5,7 @@ public with sharing class RestaurantService
 {
 	public static List<Restaurant__x> getByDistance(Decimal latitude, Decimal longitude)
 	{
-		return RestaurantMapper.getByLocation(latitude, longitude);
+		return RestaurantMapperFactory.getInstance().getByLocation(latitude, longitude);
 	}
 
 	public static List<Restaurant__x> orderByPopularity(List<Restaurant__x> restaurants)
