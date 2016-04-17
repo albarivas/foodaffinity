@@ -19,6 +19,7 @@ public with sharing class GooglePlacesService
 
 	public static List<Restaurant> getRestaurantsByLocation(Decimal latitude, Decimal longitude)
 	{
+		Datetime startTime = System.now();
 		String endpointURL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=' + latitude + ',' + longitude + '&radius=1000&types=restaurant&rankBy=distance&key=' + GOOGLE_API_KEY;
 
 		String response = HttpConnection.doGet(endpointURL);
@@ -27,6 +28,13 @@ public with sharing class GooglePlacesService
 		List<Restaurant> restaurants = deserializedResponse.results;
 
 		calculateOverallRatings(restaurants);
+
+		Datetime endTime = System.now();
+
+		Decimal duration = endTime.getTime() - startTime.getTime();
+
+		System.debug(LoggingLevel.ERROR, 'Network time: ' +  duration);
+
 
 		return restaurants;
 	}

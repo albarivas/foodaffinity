@@ -3,9 +3,24 @@
  */
 public with sharing class RestaurantService
 {
+	public static final Boolean useCallouts = true;
+
 	public static List<Restaurant__x> getByDistance(Decimal latitude, Decimal longitude)
 	{
-		return RestaurantMapperFactory.getInstance().getByLocation(latitude, longitude);
+		List<Restaurant__x> restaurants;
+
+		Datetime startTime = System.now();
+		if (useCallouts)
+			restaurants = RestaurantCalloutService.getByLocation(latitude, longitude);
+		else
+			restaurants = RestaurantMapperFactory.getInstance().getByLocation(latitude, longitude);
+		Datetime endTime = System.now();
+
+		Decimal duration = endTime.getTime() - startTime.getTime();
+
+		System.debug(LoggingLevel.ERROR, 'Time (useCallouts = '+ useCallouts + '): ' +  duration);
+
+		return restaurants;
 	}
 
 	public static List<Restaurant__x> orderByPopularity(List<Restaurant__x> restaurants)
